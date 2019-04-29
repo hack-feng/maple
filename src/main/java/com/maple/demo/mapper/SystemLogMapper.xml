@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maple.demo.dao.SystemLogMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.maple.demo.bean.SystemLog">
+		<id column="id" property="id" />
+		<result column="params" property="params" />
+		<result column="results" property="results" />
+		<result column="create_date" property="createDate" />
+		<result column="request_ip" property="requestIp" />
+		<result column="all_method_name" property="allMethodName" />
+		<result column="method_name" property="methodName" />
+		<result column="operation_type" property="operationType" />
+		<result column="success" property="success" />
+		<result column="resp_date" property="respDate" />
+		<result column="error_msg" property="errorMsg" />
+		<result column="operate_id" property="operateId" />
+		<result column="operate_name" property="operateName" />
+		<result column="type" property="type" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, params, results, create_date AS createDate, request_ip AS requestIp, all_method_name AS allMethodName, method_name AS methodName, operation_type AS operationType, success, resp_date AS respDate, error_msg AS errorMsg, operate_id AS operateId, operate_name AS operateName, type
+    </sql>
+
+</mapper>
