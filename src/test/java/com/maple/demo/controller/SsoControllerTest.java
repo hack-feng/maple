@@ -9,10 +9,13 @@ import java.util.concurrent.CountDownLatch;
 
 public class SsoControllerTest {
 
+	/**
+	 * 测试并发登录
+	 */
 	@Test
 	public void testLogin() {
 		CountDownLatch c = new CountDownLatch(1);
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 1; i++) {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
