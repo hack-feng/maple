@@ -19,6 +19,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         //判断session是否存在
         HttpSession session = request.getSession(true);
+        session.setAttribute(WebConfig.LOGIN_USER, "maple");
 
         //如果session不存在，则跳转到登录页
         if (session.getAttribute(WebConfig.LOGIN_USER) == null){
