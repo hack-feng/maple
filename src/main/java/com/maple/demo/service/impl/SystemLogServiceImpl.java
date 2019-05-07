@@ -1,8 +1,9 @@
-package com.maple.demo.service;
+package com.maple.demo.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maple.demo.bean.SystemLog;
 import com.maple.demo.dao.SystemLogMapper;
+import com.maple.demo.service.SystemLogService;
 import org.springframework.stereotype.Service;
 
 /**
