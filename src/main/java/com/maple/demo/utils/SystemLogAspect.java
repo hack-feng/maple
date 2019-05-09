@@ -66,7 +66,6 @@ public class SystemLogAspect {
             log.setSuccess("FALSE");
             log.setErrorMsg(throwable.toString());
         }
-
         new Thread(new Runnable() {
             @Override
             public void run() {

@@ -9,7 +9,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface LogHelper {
 
-
     //日志描述
     String logDesc() default "";
 
