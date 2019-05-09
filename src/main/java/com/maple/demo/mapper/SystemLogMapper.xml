@@ -25,4 +25,5 @@
         id, params, results, create_date AS createDate, request_ip AS requestIp, all_method_name AS allMethodName, method_name AS methodName, operation_type AS operationType, success, resp_date AS respDate, error_msg AS errorMsg, operate_id AS operateId, operate_name AS operateName, type
     </sql>
 
+
 </mapper>
