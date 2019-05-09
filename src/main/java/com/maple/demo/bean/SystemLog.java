@@ -97,4 +97,13 @@ public class SystemLog extends Model<SystemLog> {
 	 */
 	@TableField("log_desc")
 	private String logDesc;
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	@Override
+	protected Serializable pkVal() {
+		return this.id;
+	}
 }

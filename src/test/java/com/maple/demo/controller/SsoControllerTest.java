@@ -25,8 +25,8 @@ public class SsoControllerTest {
 						e.printStackTrace();
 					}
 					Map<String, Object> map = new HashMap<>();
-					map.put("username", "maple" + Math.random());
-					map.put("password", "123456" + Math.random());
+					map.put("username", "Maple");
+					map.put("password", "123456");
 
 					String result = HttpUtil.post("http://127.0.0.1:8081/sso/login", map, 3000, 3000, "UTF-8");
 					System.out.println(result);
@@ -35,7 +35,7 @@ public class SsoControllerTest {
 		}
 		c.countDown();
 		try {
-			Thread.sleep(10000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
