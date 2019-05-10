@@ -25,6 +25,7 @@ public class SsoController extends BaseController{
 		try {
 			boolean isOk = userService.userLogin(username, password);
 			if (isOk){
+				//存放用户登录session信息，将session放在redis数据库，实现分布式session
 				request.getSession().setAttribute(WebConfig.LOGIN_USER, username);
 				return message(Type.success, "登录成功");
 			} else{
@@ -38,7 +39,12 @@ public class SsoController extends BaseController{
 		}
 	}
 
+	/**
+	 * 发送邮件信息，使用了rabbitMQ异步发送
+	 * @return
+	 */
 	@RequestMapping(value = "sendEmail")
+	@LogHelper(logDesc = "发送邮件信息", logType = logTypeEnum.BUSINESS, operType = operTypeEnum.SELECT)
 	public String sendEmail(){
 		SendEmailUtils a = new SendEmailUtils();
 		a.sendEmail("246843101@qq.com", "测试", "ceshi");

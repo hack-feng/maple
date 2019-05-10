@@ -10,13 +10,17 @@ public class HelloSender {
 
     private static AmqpTemplate amqpTemplate;
 
-    // 注入的时候，给类的 service 注入
+    // 注入amqpTemplate
     @Autowired
     public void setChatService(AmqpTemplate amqpTemplate) {
         HelloSender.amqpTemplate = amqpTemplate;
     }
 
+    /**
+     * 将消息放入rabbitMQ "sendEmail" 通道的消息队列
+     * @param mainMessage
+     */
     public void send( SimpleMailMessage mainMessage) {
-        amqpTemplate.convertAndSend("queue", mainMessage);
+        amqpTemplate.convertAndSend("sendEmail", mainMessage);
     }
 }

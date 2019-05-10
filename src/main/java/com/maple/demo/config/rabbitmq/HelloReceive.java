@@ -12,11 +12,14 @@ public class HelloReceive {
     @Autowired()
     private JavaMailSender javaMailSender;
 
-    @RabbitListener(queues = "queue")
+    /**
+     * 监听Rabbit下的sendEmail通道，处理消息队列中未处理的消息
+     * @param mainMessage
+     */
+    @RabbitListener(queues = "sendEmail")
     public void processC(SimpleMailMessage mainMessage){
 
-        System.out.println("receive" + mainMessage);
-        mainMessage.setFrom("1150640979@qq.com");
+        //发送邮件
         javaMailSender.send(mainMessage);
 
     }

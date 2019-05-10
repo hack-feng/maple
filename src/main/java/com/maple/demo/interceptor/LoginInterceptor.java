@@ -19,11 +19,12 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         System.out.println(session.getAttribute(WebConfig.LOGIN_USER));
 
-        //如果session不存在，则跳转到登录页
+        //如果session不存在，转发到/sso/index请求上，该请求暂不存在
         if (session.getAttribute(WebConfig.LOGIN_USER) == null){
             response.sendRedirect(request.getContextPath()+"/sso/index");
             return false;
         } else {
+            //刷新session的值，每次成功访问刷新失效时间
             session.setAttribute(WebConfig.LOGIN_USER, session.getAttribute(WebConfig.LOGIN_USER));
             return true;
         }
