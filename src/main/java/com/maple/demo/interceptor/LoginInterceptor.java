@@ -1,7 +1,7 @@
 package com.maple.demo.interceptor;
 
 
-import com.maple.demo.utils.WebConfig;
+import com.maple.demo.config.WebConfig;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,11 +16,12 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         //判断session是否存在
         HttpSession session = request.getSession(true);
-        session.setAttribute(WebConfig.LOGIN_USER, "maple");
+
+        System.out.println(session.getAttribute(WebConfig.LOGIN_USER));
 
         //如果session不存在，则跳转到登录页
         if (session.getAttribute(WebConfig.LOGIN_USER) == null){
-            response.sendRedirect(request.getContextPath()+"/index");
+            response.sendRedirect(request.getContextPath()+"/sso/index");
             return false;
         } else {
             session.setAttribute(WebConfig.LOGIN_USER, session.getAttribute(WebConfig.LOGIN_USER));

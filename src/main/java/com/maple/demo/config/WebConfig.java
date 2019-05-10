@@ -1,4 +1,4 @@
-package com.maple.demo.utils;
+package com.maple.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,5 +24,4 @@ public class WebConfig implements WebMvcConfigurer {
         viewResolver.setViewClass(JstlView.class);
         return viewResolver;
     }
-
 }

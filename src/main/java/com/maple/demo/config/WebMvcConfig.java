@@ -1,5 +1,7 @@
-package com.maple.demo.interceptor;
+package com.maple.demo.config;
 
+import com.maple.demo.interceptor.LoginInterceptor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -9,6 +11,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Bean
+    public LoginInterceptor getSessionInterceptor() {
+        return new LoginInterceptor();
+    }
+
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
@@ -16,6 +25,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
          * 用户登录拦截器
          * 拦截除了/sso请求下的所有请求
          */
-        registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/**","/main.html").excludePathPatterns("/sso/**");
+        registry.addInterceptor(getSessionInterceptor()).addPathPatterns("/**","/main.html").excludePathPatterns("/sso/**");
     }
 }

@@ -28,7 +28,7 @@ public class SsoControllerTest {
 					map.put("username", "Maple");
 					map.put("password", "123456");
 
-					String result = HttpUtil.post("http://127.0.0.1:8081/sso/login", map, 3000, 3000, "UTF-8");
+					String result = HttpUtil.post("http://127.0.0.1:8082/sso/login", map, 3000, 3000, "UTF-8");
 					System.out.println(result);
 				}
 			}).start();
