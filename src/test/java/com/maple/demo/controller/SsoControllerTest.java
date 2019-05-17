@@ -42,4 +42,18 @@ public class SsoControllerTest {
 
 	}
 
+	/**
+	 * 测试发送邮件
+	 */
+	@Test
+	public void testSendEmail() {
+		Map<String, Object> map = new HashMap<>();
+		map.put("receiverMail","246843101@qq.com");
+		map.put("title","这是一封很严谨的邮件");
+		map.put("content","测试发送邮件功能的内容");
+		String result = HttpUtil.post("http://127.0.0.1:8082/sso/sendEmail", map, 3000, 3000, "UTF-8");
+		System.out.println(result);
+
+	}
+
 }

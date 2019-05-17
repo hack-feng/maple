@@ -45,9 +45,9 @@ public class SsoController extends BaseController{
 	 */
 	@RequestMapping(value = "sendEmail")
 	@LogHelper(logDesc = "发送邮件信息", logType = logTypeEnum.BUSINESS, operType = operTypeEnum.SELECT)
-	public String sendEmail(){
+	public String sendEmail(String receiverMail, String title, String content){
 		SendEmailUtils a = new SendEmailUtils();
-		a.sendEmail("246843101@qq.com", "测试", "ceshi");
+		a.sendEmail(receiverMail, title, content);
 		return message(Type.success, "发送成功");
 	}
 

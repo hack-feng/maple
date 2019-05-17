@@ -19,6 +19,7 @@ public class SendEmailUtils {
         mainMessage.setSubject(title);
         //发送的内容
         mainMessage.setText(content);
+        //调用发送者
         helloSender.send(mainMessage);
 
     }

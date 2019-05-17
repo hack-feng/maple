@@ -18,6 +18,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession(true);
 
         System.out.println(session.getAttribute(WebConfig.LOGIN_USER));
+        session.setAttribute(WebConfig.LOGIN_USER, "maple");
 
         //如果session不存在，转发到/sso/index请求上，该请求暂不存在
         if (session.getAttribute(WebConfig.LOGIN_USER) == null){
