@@ -122,7 +122,7 @@ public class ExportExcelUtils {
     
     /**
      * 这是一个通用的方法，导出excel2007版，后缀为.xlsx。暂未实现添加图片的导出
-     * 不支持WPS，不知道不为什么，在找原因。
+     * 不支持WPS，不知道不为什么，再找原因。
      *
      * @param title
      *            表格标题名
