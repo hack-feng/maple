@@ -28,6 +28,12 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(GlobalConfigs.RESOURCE_HANDLER).addResourceLocations(GlobalConfigs.RESOURCE_LOCATION);
+    	String os = System.getProperty("os.name");
+    	if(os.toLowerCase().startsWith("win")) {
+    		registry.addResourceHandler(GlobalConfigs.RESOURCE_HANDLER).addResourceLocations(GlobalConfigs.WIN_RESOURCE_LOCATION);
+    	}else {
+    		registry.addResourceHandler(GlobalConfigs.RESOURCE_HANDLER).addResourceLocations(GlobalConfigs.LINUX_RESOURCE_LOCATION);
+    	}
+        
     }
 }

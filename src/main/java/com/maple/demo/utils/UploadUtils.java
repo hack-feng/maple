@@ -29,8 +29,17 @@ public class UploadUtils {
         String fileName = file.getOriginalFilename();
         // 后缀名
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        
         // 上传后的路径
-        String filePath = GlobalConfigs.UPLOAD_URL;
+        String filePath = "";
+        
+        String os = System.getProperty("os.name");
+        if(os.toLowerCase().startsWith("win")) {
+        	filePath = GlobalConfigs.WIN_UPLOAD_URL;
+        }else {
+        	filePath = GlobalConfigs.LINUX_UPLOAD_URL;
+        }
+        
         // 新文件名
         fileName = UUID.randomUUID() + suffixName;
 
