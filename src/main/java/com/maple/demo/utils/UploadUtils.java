@@ -49,29 +49,4 @@ public class UploadUtils {
         String result = GlobalConfigs.BASE_FILE_URL + fileName;
         return result;
     }
-
-    public static String multiUpload(HttpServletRequest request) {
-        List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
-        String filePath = "D:/data/";
-        for (int i = 0; i < files.size(); i++) {
-            MultipartFile file = files.get(i);
-            if (file.isEmpty()) {
-                return "上传失败，第" + (i++) + "个文件为空";
-            }
-        }
-        for (int i = 0; i < files.size(); i++) {
-            MultipartFile file = files.get(i);
-            String fileName = file.getOriginalFilename();
-
-            File dest = new File(filePath + fileName);
-            try {
-                file.transferTo(dest);
-            } catch (IOException e) {
-                return "上传第" + (i++) + "个文件失败";
-            }
-        }
-
-        return "上传成功";
-
-    }
 }
