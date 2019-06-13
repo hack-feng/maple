@@ -3,11 +3,11 @@ package com.maple.demo.interceptor;
 
 import com.maple.demo.config.WebMvcConfig;
 import org.springframework.web.servlet.HandlerInterceptor;
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 
 public class LoginInterceptor implements HandlerInterceptor {
 

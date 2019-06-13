@@ -1,5 +1,6 @@
 package com.maple.demo.controller;
 
+import com.maple.demo.config.GlobalConfigs;
 import com.maple.demo.config.WebMvcConfig;
 import com.maple.demo.service.UserService;
 import com.maple.demo.utils.LogHelper;
@@ -22,12 +23,12 @@ public class SsoController extends BaseController{
 	private UserService userService;
 
 	@RequestMapping(value = "/login")
-	@LogHelper(logDesc = "用户登录", logType = logTypeEnum.LOGIN, operType = operTypeEnum.SELECT)
 	@ApiOperation(value = "用户登录", notes = "根据用户名、密码、图片验证码登录系统")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "username", value = "用户ID", required = true, dataType = "String"),
 			@ApiImplicitParam(name = "password", value = "用户详细实体user", required = true, dataType = "String"),
 			@ApiImplicitParam(name = "imgCode", value = "图片验证码", required = true, dataType = "String")})
+	@LogHelper(logDesc = "用户登录", logType = GlobalConfigs.logTypeEnum.LOGIN, operType = GlobalConfigs.operTypeEnum.SELECT)
 	public String login(String username, String password, String imgCode, HttpServletRequest request) {
 
 		try {
@@ -52,7 +53,7 @@ public class SsoController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping(value = "sendEmail")
-	@LogHelper(logDesc = "发送邮件信息", logType = logTypeEnum.BUSINESS, operType = operTypeEnum.SELECT)
+	@LogHelper(logDesc = "发送邮件信息", logType = GlobalConfigs.logTypeEnum.BUSINESS, operType = GlobalConfigs.operTypeEnum.SELECT)
 	public String sendEmail(String receiverMail, String title, String content){
 		SendEmailUtils a = new SendEmailUtils();
 		a.sendEmail(receiverMail, title, content);
