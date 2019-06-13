@@ -17,6 +17,9 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<mybatis-plus-boot-starter.version>3.0-RC3</mybatis-plus-boot-starter.version>
+		<swagger2.version>2.7.0</swagger2.version>
+		<poi.version>3.9</poi.version>
+		<druid.version>1.1.0</druid.version>
 	</properties>
 
 	<dependencies>
@@ -66,7 +69,7 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
-			<version>1.1.0</version>
+			<version>${druid.version}</version>
 		</dependency>
 
 		<!-- 引入mybatis-plus相关 -->
@@ -88,21 +91,53 @@
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 
+		<!-- 引入导出excel相关 -->
+		<dependency>
+		   <groupId>org.apache.poi</groupId>
+		   <artifactId>poi-ooxml</artifactId>
+		   <version>${poi.version}</version>
+		</dependency>
+
 		<!-- 引入lombok，简化项目中的javabean -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
-		<!-- 引入导出excel相关 -->
+
+		<!-- 引入swagger2自动生成文档-->
 		<dependency>
-		   <groupId>org.apache.poi</groupId>
-		   <artifactId>poi-ooxml</artifactId>
-		   <version>3.9</version>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${swagger2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${swagger2.version}</version>
+		</dependency>
+
+		<!-- 引入WebSocket -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
 
 	</dependencies>
+
+	<!-- 引入spring Cloud 版本信息-->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
 
     <profiles>
         <!--开发环境-->

@@ -1,9 +1,12 @@
 package com.maple.demo.controller;
 
-import com.maple.demo.config.WebConfig;
+import com.maple.demo.config.WebMvcConfig;
 import com.maple.demo.service.UserService;
 import com.maple.demo.utils.LogHelper;
 import com.maple.demo.utils.SendEmailUtils;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,13 +23,18 @@ public class SsoController extends BaseController{
 
 	@RequestMapping(value = "/login")
 	@LogHelper(logDesc = "用户登录", logType = logTypeEnum.LOGIN, operType = operTypeEnum.SELECT)
+	@ApiOperation(value = "用户登录", notes = "根据用户名、密码、图片验证码登录系统")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "username", value = "用户ID", required = true, dataType = "String"),
+			@ApiImplicitParam(name = "password", value = "用户详细实体user", required = true, dataType = "String"),
+			@ApiImplicitParam(name = "imgCode", value = "图片验证码", required = true, dataType = "String")})
 	public String login(String username, String password, String imgCode, HttpServletRequest request) {
 
 		try {
 			boolean isOk = userService.userLogin(username, password);
 			if (isOk){
 				//存放用户登录session信息，将session放在redis数据库，实现分布式session
-				request.getSession().setAttribute(WebConfig.LOGIN_USER, username);
+				request.getSession().setAttribute(WebMvcConfig.LOGIN_USER, username);
 				return message(Type.success, "登录成功");
 			} else{
 				return message(Type.error, "登录失败，请重试！");
