@@ -1,13 +1,26 @@
 package com.maple.demo.interceptor;
 
 
-import com.maple.demo.config.WebConfig;
-import org.springframework.web.servlet.HandlerInterceptor;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import com.maple.demo.bean.User;
+import com.maple.demo.config.WebConfig;
 
 public class LoginInterceptor implements HandlerInterceptor {
 

@@ -101,8 +101,34 @@
 		   <artifactId>poi-ooxml</artifactId>
 		   <version>3.9</version>
 		</dependency>
+		
+		<!-- 引入jsoup，用作爬虫 -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.8.3</version>
+        </dependency>
+
+		<!-- 负载均衡
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-ribbon</artifactId>
+		</dependency> -->
 
 	</dependencies>
+
+	<!-- spring Cloud 版本信息 
+	<dependencyManagement>
+	    <dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>Dalston.SR3</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>-->
 
     <profiles>
         <!--开发环境-->

@@ -1,5 +1,6 @@
 package com.maple.demo.controller;
 
+import com.maple.demo.config.GlobalConfigs;
 import com.maple.demo.config.WebConfig;
 import com.maple.demo.service.UserService;
 import com.maple.demo.utils.LogHelper;
@@ -19,9 +20,8 @@ public class SsoController extends BaseController{
 	private UserService userService;
 
 	@RequestMapping(value = "/login")
-	@LogHelper(logDesc = "用户登录", logType = logTypeEnum.LOGIN, operType = operTypeEnum.SELECT)
+	@LogHelper(logDesc = "用户登录", logType = GlobalConfigs.logTypeEnum.LOGIN, operType = GlobalConfigs.operTypeEnum.SELECT)
 	public String login(String username, String password, String imgCode, HttpServletRequest request) {
-
 		try {
 			boolean isOk = userService.userLogin(username, password);
 			if (isOk){
@@ -44,7 +44,7 @@ public class SsoController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping(value = "sendEmail")
-	@LogHelper(logDesc = "发送邮件信息", logType = logTypeEnum.BUSINESS, operType = operTypeEnum.SELECT)
+	@LogHelper(logDesc = "发送邮件信息", logType = GlobalConfigs.logTypeEnum.BUSINESS, operType = GlobalConfigs.operTypeEnum.SELECT)
 	public String sendEmail(String receiverMail, String title, String content){
 		SendEmailUtils a = new SendEmailUtils();
 		a.sendEmail(receiverMail, title, content);

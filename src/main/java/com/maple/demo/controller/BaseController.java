@@ -1,35 +1,45 @@
 package com.maple.demo.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-public class BaseController {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.ZSetOperations;
 
-    /**
-     * 日志-日志类型
-     */
-    public enum logTypeEnum{
-        //登录
-        LOGIN,
-        //接口
-        INTERFACE,
-        //业务
-        BUSINESS
+public class BaseController<K, V> {
 
-    }
-
-    /**
-     * 日志-操作类型
-     */
-    public enum operTypeEnum{
-        SELECT,
-        INSERT,
-        UPDATE,
-        DELETE
-    }
-
+	@Autowired
+	private RedisTemplate<K, V> redisTemplate;
+	
+	public void valueOperations(K key, V value) {
+		ValueOperations<K, V> valueOperations = redisTemplate.opsForValue();//操作字符串
+		valueOperations.set(key, value);
+	}
+	
+	public void hashOperations(K key, K hashKey, V value) {
+		HashOperations<K, K, V> hashOperations = redisTemplate.opsForHash();//操作hash
+		hashOperations.put(key, hashKey, value);
+	}
+	
+	public void listOperations(K key ) {
+		ListOperations<?, ?> listOperations = redisTemplate.opsForList();//操作list
+	}
+	
+	public void SetOperations(K key, Set<V> value) {
+		SetOperations<?, ?> setOperations = redisTemplate.opsForSet();//操作set
+	}
+	
+	public void zSetOperations() {
+		ZSetOperations<?, ?> zSetOperations = redisTemplate.opsForZSet();//操作有序set
+	
+	}
+	
     /**
      * 定义返回类型
      */

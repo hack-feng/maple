@@ -1,8 +1,12 @@
 package com.maple.demo.utils;
 
-import com.maple.demo.controller.BaseController;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.lang.annotation.*;
+import com.maple.demo.config.GlobalConfigs;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -13,8 +17,8 @@ public @interface LogHelper {
     String logDesc() default "";
 
     //操作类型
-    BaseController.operTypeEnum operType();
+    GlobalConfigs.operTypeEnum operType();
 
     //日志类型（0：登录 1：业务 2：接口）
-    BaseController.logTypeEnum logType();
+    GlobalConfigs.logTypeEnum logType();
 }
