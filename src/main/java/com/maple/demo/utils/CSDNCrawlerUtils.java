@@ -13,12 +13,12 @@ import java.util.regex.Pattern;
 
 public class CSDNCrawlerUtils {
 
+    //查询文章条数计数器
+    private static volatile  int COUNT = 0;
     //默认查询条数
     private static volatile int MAX = 10;
     //默认查询阅读量超过的条数
     private static volatile int REND_NUM = 100;
-
-
 
     /**
      * 获取https://blog.csdn.net/qq_34988304地址下，我的博客信息
@@ -28,6 +28,7 @@ public class CSDNCrawlerUtils {
      * @return
      */
     public static List<Map<String, Object>> csdn_crawler(String about, Integer num, Integer readNum){
+        MAX = num;
         List<Map<String, Object>> list = new ArrayList<>();
         String url="https://blog.csdn.net/qq_34988304";
         Document doc = getUrl(url);
@@ -87,10 +88,18 @@ public class CSDNCrawlerUtils {
             String title = flag.getElementsByTag("span").get(0).text();
             String urls = flag.select("a").get(0).attr("href");
             if ("博客".equals(title)) {
-                System.out.println(urls);
                 urlSet.add(urls);
             }
         }
+        if(urlSet.size() > 0){
+            list = getArticleList(urlSet);
+        }
+
+
+        for(Map flag : list){
+            System.out.println(flag);
+        }
+
         return list;
     }
 
@@ -99,12 +108,23 @@ public class CSDNCrawlerUtils {
      * @return
      */
     public static List<Map<String, Object>> getArticleList(Set<String> set){
-        List<Map<String, Object>> map = new ArrayList<>();
+        List<Map<String, Object>> result = new ArrayList<>();
+        Set<String> urlSet = new HashSet<>();
         for (String url : set){
             Document doc = getUrl(url);
-
+            Map<String, Object> contentMap = getContent(doc);
+            if(contentMap != null){
+                if(COUNT < MAX){
+                    result.add(contentMap);
+                    COUNT++;
+                    urlSet.addAll(getContentUrls(doc));
+                }else {
+                    break;
+                }
+            }
         }
-        return map;
+        getArticleList(urlSet);
+        return result;
     }
 
     /**
@@ -157,19 +177,32 @@ public class CSDNCrawlerUtils {
         Set<String> urls = new HashSet<>();
         Elements els = doc.getElementsByClass("recommend-item-box");
         for (Element flag : els){
-            Element el = flag.select("a").get(0);
-            String url = el.attr("href");
-            String title = el.attr("title");
-            String num = flag.getElementsByClass("read-num").get(0).text();
+            try {
+                //如果a节点为空或不存在，则跳出本次循环
+                if(flag.select("a") == null || flag.select("a").size() == 0){
+                    continue;
+                }
+                Element el = flag.select("a").get(0);
+                String url = el.attr("href");
+                String title = el.attr("title");
 
-            String regEx = "[^0-9]";
-            Pattern pattern = Pattern.compile(regEx);
-            Matcher m = pattern.matcher(num);
+                if(flag.getElementsByClass("read-num") == null || flag.getElementsByClass("read-num").size() == 0){
+                    continue;
+                }
+                String num = flag.getElementsByClass("read-num").get(0).text();
 
-            Integer numFlag = Integer.valueOf(m.replaceAll(""));
+                String regEx = "[^0-9]";
+                Pattern pattern = Pattern.compile(regEx);
+                Matcher m = pattern.matcher(num);
 
-            if(numFlag != null && numFlag > 0){
-                urls.add(url);
+                Integer numFlag = Integer.valueOf(m.replaceAll(""));
+
+                if(numFlag != null && numFlag > 0){
+                    urls.add(url);
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                continue;
             }
         }
 
