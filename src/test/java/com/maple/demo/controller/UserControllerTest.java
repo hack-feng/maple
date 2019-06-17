@@ -14,8 +14,17 @@ public class UserControllerTest {
 	 */
 	@Test
 	public void testLogin() {
-		Map map = new HashMap();
-		String result = HttpUtil.post("http://127.0.0.1:8044/user/test", map, 3000, 3000, "UTF-8");
+
+		String param = null;
+		switch (param) {
+			case "null":
+				System.out.println("null");
+				break;
+			default:
+				System.out.println("default");
+		}
+//		Map map = new HashMap();
+//		String result = HttpUtil.post("http://127.0.0.1:8044/user/test", map, 3000, 3000, "UTF-8");
 	}
 
 }
