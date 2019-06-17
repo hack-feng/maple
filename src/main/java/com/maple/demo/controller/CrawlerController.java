@@ -38,7 +38,7 @@ public class CrawlerController {
 	public List<Map<String, Object>> getCsdnByAbout(String about, Integer num, Integer readNum){
 		List<Map<String, Object>> result = new ArrayList<>();
 
-		result = CSDNCrawlerUtils.csdn_about(about, 1, 1);
+		result = CSDNCrawlerUtils.csdn_about(about, num, readNum);
 
 		return result;
 	}

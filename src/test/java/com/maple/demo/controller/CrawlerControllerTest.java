@@ -30,9 +30,9 @@ public class CrawlerControllerTest {
 	public void getCsdnByAbout() {
 		Map<String, Object> map = new HashMap<>();
 		map.put("about","浏览器使用华视电子设备读取身份证信息");
-		map.put("num",10);
+		map.put("num",1);
 		map.put("readNum",1000);
-		String result = HttpUtil.post("http://127.0.0.1:8044/crawler/getCsdnByAbout", map, 3000, 3000, "UTF-8");
+		String result = HttpUtil.post("http://127.0.0.1:8044/crawler/getCsdnByAbout", map, 30000, 30000, "UTF-8");
 		System.out.println(result);
 	}
 }

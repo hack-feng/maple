@@ -19,6 +19,8 @@ public class CSDNCrawlerUtils {
     private static volatile int MAX = 10;
     //默认查询阅读量超过的条数
     private static volatile int REND_NUM = 100;
+    //存放返回的文章列表
+    private static List<Map<String, Object>> RSEULT;
 
     /**
      * 获取https://blog.csdn.net/qq_34988304地址下，我的博客信息
@@ -28,7 +30,6 @@ public class CSDNCrawlerUtils {
      * @return
      */
     public static List<Map<String, Object>> csdn_crawler(String about, Integer num, Integer readNum){
-        MAX = num;
         List<Map<String, Object>> list = new ArrayList<>();
         String url="https://blog.csdn.net/qq_34988304";
         Document doc = getUrl(url);
@@ -72,6 +73,9 @@ public class CSDNCrawlerUtils {
      * @return
      */
     public static List<Map<String, Object>> csdn_about(String about, Integer num, Integer readNum){
+        MAX = num;
+        COUNT = 0;
+        RSEULT = new ArrayList<>();
         List<Map<String, Object>> list = new ArrayList<>();
         String url = "https://so.csdn.net/so/search/s.do?q=a"+about;
 
@@ -108,23 +112,26 @@ public class CSDNCrawlerUtils {
      * @return
      */
     public static List<Map<String, Object>> getArticleList(Set<String> set){
-        List<Map<String, Object>> result = new ArrayList<>();
         Set<String> urlSet = new HashSet<>();
-        for (String url : set){
-            Document doc = getUrl(url);
-            Map<String, Object> contentMap = getContent(doc);
-            if(contentMap != null){
-                if(COUNT < MAX){
-                    result.add(contentMap);
-                    COUNT++;
-                    urlSet.addAll(getContentUrls(doc));
-                }else {
-                    break;
+        if(COUNT < MAX) {
+            for (String url : set) {
+                Document doc = getUrl(url);
+                Map<String, Object> contentMap = getContent(doc);
+                if (contentMap != null) {
+                    if (COUNT < MAX) {
+                        RSEULT.add(contentMap);
+                        COUNT++;
+                        urlSet.addAll(getContentUrls(doc));
+                    } else {
+                        break;
+                    }
                 }
             }
+            if(COUNT < MAX) {
+                getArticleList(urlSet);
+            }
         }
-        getArticleList(urlSet);
-        return result;
+        return RSEULT;
     }
 
     /**
@@ -140,10 +147,11 @@ public class CSDNCrawlerUtils {
         String auth = null;
         if(doc != null){
             // 获取标题
-            title = doc.getElementsByClass("article-title-box").get(0).text();
+            title = doc.getElementsByClass("article-title-box").get(0).select("h1").text();
             Element all = doc.getElementsByClass("article-info-box").get(0);
+
             // 获取作者
-            auth = doc.select("a").text();
+            auth = all.select("a").text();
 
             //获取阅读量
             String num = all.getElementsByClass("read-count").get(0).text();
@@ -205,13 +213,8 @@ public class CSDNCrawlerUtils {
                 continue;
             }
         }
-
         return urls;
-
     }
-
-
-
 
     /**
      * 模拟火狐浏览器请求
@@ -219,6 +222,9 @@ public class CSDNCrawlerUtils {
      * @return
      */
     public static Document getUrl(String url){
+        if(COUNT > MAX) {
+            return null;
+        }
         Document doc = null;
         try {
             doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36").get();//模拟火狐浏览器
