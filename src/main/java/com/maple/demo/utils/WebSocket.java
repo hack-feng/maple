@@ -1,11 +1,10 @@
 package com.maple.demo.utils;
 
+import com.alibaba.fastjson.JSONObject;
+import io.swagger.models.auth.In;
 import org.springframework.stereotype.Component;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.HashMap;
@@ -13,20 +12,24 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @Component
-@ServerEndpoint("/websocket/{userName}")
-public class WebSocket {
+@ServerEndpoint("/websocket/{userId}")
+public class WebSocket{
 
+    //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
 
     private static CopyOnWriteArraySet<WebSocket> webSockets = new CopyOnWriteArraySet<>();
+    //创建一个线程安全的map
     private static Map<String, Session> sessionPool = new HashMap<>();
+    //放入map中的key,用来表示该连接对象
+    private String username;
 
     @OnOpen
-    public void onOpen(Session session, @PathParam(value = "userName")String userName){
+    public void onOpen(Session session, @PathParam("userId") String userId){
         this.session = session;
         webSockets.add(this);
-        sessionPool.put(userName, session);
-        System.out.println(userName+"【webSocket消息】有新的连接，总数为："+webSockets.size());
+        sessionPool.put(userId, session);
+        System.out.println(userId+"【webSocket消息】有新的连接，总数为："+webSockets.size());
     }
 
     @OnClose
@@ -36,8 +39,19 @@ public class WebSocket {
     }
 
     @OnMessage
-    public void  onMessage(String message){
-        System.out.println("【websocket消息】收到客户端消息:"+message);
+    public void  onMessage(String msgData){
+//        User user = getUser(httpSession);
+        String[] flag = msgData.split("&");
+        JSONObject jsonObject = JSONObject.parseObject(msgData);
+        String message = String.valueOf(jsonObject.get("message"));
+        Integer friendId = Integer.valueOf(jsonObject.get("friendId").toString());
+        System.out.println(friendId+"【websocket消息】收到客户端消息:"+message);
+    }
+
+    @OnError
+    public void onError(Session session, Throwable error) {
+        System.out.println("发生错误 session: "+session);
+        error.printStackTrace();
     }
 
     // 此为广播消息

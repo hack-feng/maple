@@ -3,6 +3,10 @@ package com.maple.demo.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.maple.demo.bean.Message;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -15,4 +19,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface MessageMapper extends BaseMapper<Message> {
 
+    List<Map> getMessageList(@Param("friendId") Integer friendId, @Param("userId") Integer userId);
 }

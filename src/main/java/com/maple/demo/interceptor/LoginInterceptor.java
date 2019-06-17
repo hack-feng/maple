@@ -16,7 +16,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         //判断session是否存在
         HttpSession session = request.getSession(true);
-
+        session.setAttribute(WebMvcConfig.LOGIN_USER,"maple");
         System.out.println(session.getAttribute(WebMvcConfig.LOGIN_USER));
 
         //如果session不存在，转发到/sso/index请求上，该请求暂不存在

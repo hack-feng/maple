@@ -53,6 +53,11 @@ public class Message extends Model<Message> {
      */
 	private Integer type;
 
+	/**
+	 *  0：有效   1：无效
+	 */
+	private Integer status;
+
 	public Integer getId() {
 		return id;
 	}
@@ -137,7 +142,14 @@ public class Message extends Model<Message> {
 	public void setType(Integer type) {
 		this.type = type;
 	}
-	
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
 	@Override
 	protected Serializable pkVal() {

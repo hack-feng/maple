@@ -21,4 +21,36 @@
         id, message, send_user AS sendUser, reciver_user AS reciverUser, create_date AS createDate, message_type AS messageType, type
     </sql>
 
+	<select id="getMessageList" resultType="java.util.Map">
+		SELECT
+			b.id,
+			b.message,
+			b.send_user AS sendUser,
+			b.reciver_user AS reciverUser,
+			b.create_date AS createDate,
+			b.message_type AS messageType,
+			b.type,
+			a.nick_name as nickName,
+			a.id AS userId
+		FROM
+			maple_user a,
+			maple_message b
+		WHERE
+			a.id = #{userId}
+		AND (
+			(
+				b.send_user = #{userId}
+				AND b.reciver_user = #{friendId}
+			)
+			OR (
+				b.send_user = #{friendId}
+				AND b.reciver_user = #{userId}
+			)
+		)
+		ORDER BY
+			b.id
+		LIMIT 20
+
+	</select>
+
 </mapper>

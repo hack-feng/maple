@@ -6,6 +6,9 @@ import com.maple.demo.dao.MessageMapper;
 import com.maple.demo.service.MessageService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  *  服务实现类
@@ -16,5 +19,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> implements MessageService {
-	
+
+    @Override
+    public List<Map> getMessageList(Integer friendId, Integer userId) {
+        return baseMapper.getMessageList(friendId, userId);
+    }
 }
