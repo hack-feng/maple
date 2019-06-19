@@ -33,7 +33,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter implements WebMvcConfi
     }
 
     //用户登录存放的session
-    public static final String LOGIN_USER = "LOGIN_USER";
+    public static final String LOGIN_USER = "MAPLE_LOGIN_USER";
 
     /**
      * 配置jsp页面

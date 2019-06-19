@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Override
-    public boolean userLogin(String username, String password) throws RuntimeException{
+    public User userLogin(String username, String password) throws RuntimeException{
         User user = this.baseMapper.selectOne(new QueryWrapper<User>().eq("user_name", username).eq("is_delete", 0));
         if (user == null){
             throw new RuntimeException("该用户不存在！");
@@ -33,6 +33,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (user.getIsLock().equals(1)){
             throw new RuntimeException("该用户被锁定！");
         }
-        return true;
+        return user;
     }
 }

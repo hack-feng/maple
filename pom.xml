@@ -151,6 +151,11 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.9.3</version>
+		</dependency>
 
 		<!-- 负载均衡
 		<dependency>
