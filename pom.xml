@@ -22,6 +22,7 @@
 		<druid.version>1.1.0</druid.version>
 		<fastjson.version>1.2.31</fastjson.version>
         <jsoup.version>1.7.3</jsoup.version>
+		<pinyin4j.version>2.5.0</pinyin4j.version>
 	</properties>
 
 	<dependencies>
@@ -125,37 +126,31 @@
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
 
+		<!-- 阿里json串处理 -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>${fastjson.version}</version>
 		</dependency>
 
+		<!-- 引入jsoup，用作爬虫 -->
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>${jsoup.version}</version>
         </dependency>
 
-	</dependencies>
+		<!-- 汉字转换拼音（大小写） -->
+		<dependency>
+			<groupId>com.belerweb</groupId>
+			<artifactId>pinyin4j</artifactId>
+			<version>${pinyin4j.version}</version>
+		</dependency>
 
-	<!-- 引入spring Cloud 版本信息-->
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>${spring-cloud.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-		<!-- 引入jsoup，用作爬虫 -->
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.8.3</version>
-        </dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+		</dependency>
 
 		<!-- 负载均衡
 		<dependency>
@@ -164,7 +159,6 @@
 		</dependency> -->
 
 	</dependencies>
-	</dependencyManagement>
 
 	<!-- spring Cloud 版本信息
 	<dependencyManagement>
