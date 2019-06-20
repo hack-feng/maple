@@ -2,7 +2,6 @@ package com.maple.demo.controller;
 
 import com.maple.demo.bean.User;
 import com.maple.demo.config.GlobalConfigs;
-import com.maple.demo.config.JedisConfig;
 import com.maple.demo.config.StatusConfigs;
 import com.maple.demo.config.WebMvcConfig;
 import com.maple.demo.service.UserService;
@@ -42,7 +41,6 @@ public class SsoController extends BaseController{
 			User user = userService.userLogin(username, password);
 			if (user != null && user.getId() != null){
 				//存放用户登录session信息，将session放在redis数据库，实现分布式session
-				request.getSession().setAttribute(WebMvcConfig.LOGIN_USER, username);
 				String token = UUID.randomUUID().toString().replace("-", "");
 				Integer id = user.getId();
 				RedisUtil.put(GlobalConfigs.getTokenKey(user.getId()), token, GlobalConfigs.TOKEN_CACHE_TIME);
@@ -55,6 +53,7 @@ public class SsoController extends BaseController{
 				return messageToMap(StatusConfigs.NOT_OK, "登录失败，请重试！");
 			}
 		} catch (RuntimeException e){
+			e.printStackTrace();
 			return messageToMap(StatusConfigs.NOT_OK, e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();

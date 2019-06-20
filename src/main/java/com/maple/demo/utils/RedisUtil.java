@@ -1,17 +1,114 @@
 package com.maple.demo.utils;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
-
+@Component
 public final class RedisUtil {
 
-	@Autowired
-	private static JedisPool jedisPool;
+	private static String ADDR;
+
+	private static int PORT;
+
+	private static String AUTH;
+
+	private static int MAX_ACTIVE;
+
+	private static int MAX_IDLE;
+
+	private static int MIN_IDLE;
+
+	private static int MAX_WAIT;
+
+	private static int TIMEOUT;
+	private static boolean TEST_ON_BORROW = true;
+	private static JedisPool jedisPool = null;
+
+	@Value("${spring.redis.host}")
+	public static void setADDR(String ADDR) {
+		System.out.println("---------------------------------------------------"+ADDR);
+		RedisUtil.ADDR = ADDR;
+	}
+	@Value("${spring.redis.port}")
+	public static void setPORT(int PORT) {
+		RedisUtil.PORT = PORT;
+	}
+	@Value("${spring.redis.password}")
+	public static void setAUTH(String AUTH) {
+		RedisUtil.AUTH = AUTH;
+	}
+	@Value("${spring.redis.pool.maxActive}")
+	public static void setMaxActive(int maxActive) {
+		RedisUtil.MAX_ACTIVE = maxActive;
+	}
+	@Value("${spring.redis.pool.maxIdle}")
+	public static void setMaxIdle(int maxIdle) {
+		RedisUtil.MAX_IDLE = maxIdle;
+	}
+	@Value("${spring.redis.pool.minIdle}")
+	public static void setMinIdle(int minIdle) {
+		RedisUtil.MIN_IDLE = minIdle;
+	}
+	@Value("${spring.redis.pool.maxWait}")
+	public static void setMaxWait(int maxWait) {
+		RedisUtil.MAX_WAIT = maxWait;
+	}
+	@Value("${spring.redis.timeout}")
+	public static void setTIMEOUT(int TIMEOUT) {
+		RedisUtil.TIMEOUT = TIMEOUT;
+	}
+
+	/**
+	 * 初始化连接池
+	 */
+	static {
+		InputStream inputStream = null;
+		try {
+			Properties prop = new Properties();
+			inputStream = Thread.currentThread().getContextClassLoader()
+					.getResourceAsStream("application-dev.properties");
+			prop.load(inputStream);
+			ADDR = prop.getProperty("spring.redis.host");
+			PORT = Integer.valueOf(prop.getProperty("spring.redis.port"));
+			AUTH = prop.getProperty("spring.redis.password");
+			MAX_ACTIVE = Integer.valueOf(prop.getProperty("spring.redis.pool.maxActive"));
+			MAX_IDLE = Integer.valueOf(prop.getProperty("spring.redis.pool.maxIdle"));
+			MIN_IDLE = Integer.valueOf(prop.getProperty("spring.redis.pool.minIdle"));
+			MAX_WAIT = Integer.valueOf(prop.getProperty("spring.redis.pool.maxWait"));
+			TIMEOUT = Integer.valueOf(prop.getProperty("spring.redis.timeout"));
+			JedisPoolConfig config = new JedisPoolConfig();
+			config.setMaxTotal(MAX_ACTIVE);
+			config.setMaxIdle(MAX_IDLE);
+			config.setMinIdle(MIN_IDLE);
+			config.setMaxWaitMillis(MAX_WAIT);
+			config.setTestOnBorrow(TEST_ON_BORROW);
+			if (StringUtils.isEmpty(AUTH)) {
+				jedisPool = new JedisPool(config, ADDR, PORT, TIMEOUT);
+			} else {
+				jedisPool = new JedisPool(config, ADDR, PORT, TIMEOUT, AUTH);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			if(inputStream != null){
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
 	/**
 	 * 获取redis实例
@@ -137,5 +234,4 @@ public final class RedisUtil {
 		String key = "LOGIN_UserToken_WEB" + id;
 		return key;
 	}
-
 }
