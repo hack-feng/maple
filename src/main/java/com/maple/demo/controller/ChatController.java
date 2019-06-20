@@ -1,6 +1,7 @@
 package com.maple.demo.controller;
 
 import com.maple.demo.bean.User;
+import com.maple.demo.config.StatusConfigs;
 import com.maple.demo.service.MessageService;
 import com.maple.demo.service.UserService;
 import com.maple.demo.utils.WebSocket;
@@ -32,7 +33,7 @@ public class ChatController extends BaseController{
     @PostMapping("/getList")
     public Map<String, Object> getList(){
         List<User> userList = userService.list(null);
-        return messageToMap(Type.success, userList);
+        return messageToMap(StatusConfigs.OK, userList);
     }
 
     /**
@@ -48,7 +49,7 @@ public class ChatController extends BaseController{
         Map result = new HashMap();
         result.put("message", message);
         result.put("friendInfo", friendInfo);
-        return messageToMap(Type.success, result);
+        return messageToMap(StatusConfigs.OK, result);
     }
 
     @GetMapping("/sendAllWebSocket")

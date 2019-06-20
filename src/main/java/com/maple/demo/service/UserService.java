@@ -13,5 +13,5 @@ import com.maple.demo.bean.User;
  */
 public interface UserService extends IService<User> {
 
-    boolean userLogin(String username, String password);
+    User userLogin(String username, String password);
 }

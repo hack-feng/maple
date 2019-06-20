@@ -1,9 +1,12 @@
 package com.maple.demo.controller;
 
+import com.maple.demo.bean.User;
 import com.maple.demo.config.GlobalConfigs;
+import com.maple.demo.config.StatusConfigs;
 import com.maple.demo.config.WebMvcConfig;
 import com.maple.demo.service.UserService;
 import com.maple.demo.utils.LogHelper;
+import com.maple.demo.utils.RedisUtil;
 import com.maple.demo.utils.SendEmailUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -13,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/sso")
@@ -29,22 +35,29 @@ public class SsoController extends BaseController{
 			@ApiImplicitParam(name = "password", value = "用户详细实体user", required = true, dataType = "String"),
 			@ApiImplicitParam(name = "imgCode", value = "图片验证码", required = true, dataType = "String")})
 	@LogHelper(logDesc = "用户登录", logType = GlobalConfigs.logTypeEnum.LOGIN, operType = GlobalConfigs.operTypeEnum.SELECT)
-	public String login(String username, String password, String imgCode, HttpServletRequest request) {
+	public Map<String, Object> login(String username, String password, String imgCode, HttpServletRequest request) {
 
 		try {
-			boolean isOk = userService.userLogin(username, password);
-			if (isOk){
+			User user = userService.userLogin(username, password);
+			if (user != null && user.getId() != null){
 				//存放用户登录session信息，将session放在redis数据库，实现分布式session
-				request.getSession().setAttribute(WebMvcConfig.LOGIN_USER, username);
-				return message(Type.success, "登录成功");
+				String token = UUID.randomUUID().toString().replace("-", "");
+				Integer id = user.getId();
+				RedisUtil.put(GlobalConfigs.getTokenKey(user.getId()), token, GlobalConfigs.TOKEN_CACHE_TIME);
+				Map<String, Object> map = new HashMap<>();
+				map.put("id", id);
+				map.put("token", token);
+				map.put("content", "登录成功");
+				return messageToMap(StatusConfigs.OK, map);
 			} else{
-				return message(Type.error, "登录失败，请重试！");
+				return messageToMap(StatusConfigs.NOT_OK, "登录失败，请重试！");
 			}
 		} catch (RuntimeException e){
-			return message(Type.error, e.getMessage());
+			e.printStackTrace();
+			return messageToMap(StatusConfigs.NOT_OK, e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			return message(Type.error, "系统错误，请稍候再试！");
+			return messageToMap(StatusConfigs.ERROR, "系统错误，请稍候再试！");
 		}
 	}
 
@@ -57,7 +70,7 @@ public class SsoController extends BaseController{
 	public String sendEmail(String receiverMail, String title, String content){
 		SendEmailUtils a = new SendEmailUtils();
 		a.sendEmail(receiverMail, title, content);
-		return message(Type.success, "发送成功");
+		return message(StatusConfigs.OK, "发送成功");
 	}
 
 }

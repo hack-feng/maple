@@ -19,6 +19,11 @@ public class GlobalConfigs {
     public static final String RESOURCE_HANDLER = "/data/**";
 
     /**
+     * token缓存时间 3天
+     */
+    public static final int TOKEN_CACHE_TIME = 10 * 60;
+
+    /**
      * linux  ---配置
      */
 
@@ -50,6 +55,10 @@ public class GlobalConfigs {
         INSERT,
         UPDATE,
         DELETE
+    }
+
+    public static  String getTokenKey(Integer id){
+        return WebMvcConfig.LOGIN_USER + id;
     }
      
 }
