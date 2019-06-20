@@ -46,6 +46,7 @@ public class WebSocket{
         String message = String.valueOf(jsonObject.get("message"));
         Integer friendId = Integer.valueOf(jsonObject.get("friendId").toString());
         System.out.println(friendId+"【websocket消息】收到客户端消息:"+message);
+        sendOneMessage(friendId, message);
     }
 
     @OnError

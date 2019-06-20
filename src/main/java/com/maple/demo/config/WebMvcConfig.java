@@ -3,7 +3,11 @@ package com.maple.demo.config;
 import com.maple.demo.interceptor.LoginInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
@@ -12,7 +16,8 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
  * 我的配置信息
  */
 @Configuration
-public class WebMvcConfig extends WebMvcConfigurerAdapter implements WebMvcConfigurer {
+@EnableRedisHttpSession
+public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     public LoginInterceptor getSessionInterceptor() {
