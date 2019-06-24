@@ -2,12 +2,16 @@ package com.maple.demo.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.maple.demo.bean.User;
+import com.maple.demo.config.GlobalConfigs;
 import com.maple.demo.config.WebMvcConfig;
 import com.maple.demo.service.UserService;
+import com.maple.demo.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,9 +43,18 @@ public class BaseController<K, V> {
         return map;
     }
 
-    public User getUser(HttpSession session){
-        String userName = session.getAttribute(WebMvcConfig.LOGIN_USER).toString();
-        User user = userService.getOne(new QueryWrapper<User>().eq("user_name", userName));
+    public User getUser(HttpServletRequest request){
+        Map<String, Object> map = new HashMap<>();
+        String token = request.getHeader("token");
+        String loginId = request.getHeader("loginId");
+        User user = null;
+        if(!StringUtils.isEmpty(loginId) && !StringUtils.isEmpty(token)){
+            Integer id = Integer.valueOf(loginId);
+            String tokenRedis = RedisUtil.get(GlobalConfigs.getTokenKey(id));
+            if(token.equals(tokenRedis)){
+                user = userService.getById(id);
+            }
+        }
         return user;
     }
 

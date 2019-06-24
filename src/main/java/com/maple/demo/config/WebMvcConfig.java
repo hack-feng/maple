@@ -4,10 +4,10 @@ import com.maple.demo.interceptor.LoginInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
@@ -17,13 +17,12 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
  */
 @Configuration
 @EnableRedisHttpSession
-public class WebMvcConfig implements WebMvcConfigurer {
+public class WebMvcConfig extends WebMvcConfigurerAdapter implements WebMvcConfigurer {
 
     @Bean
     public LoginInterceptor getSessionInterceptor() {
         return new LoginInterceptor();
     }
-
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -64,14 +63,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     }
 
-    /**
-     * 跨域处理
-     * @param registry
-     */
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**");
+//    }
 
     /**
      * 注入ServerEndpointExporter，
@@ -80,5 +75,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Bean
     public ServerEndpointExporter serverEndpointExporter() {
         return new ServerEndpointExporter();
+    }
+
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE");
     }
 }

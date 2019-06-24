@@ -19,9 +19,9 @@ public class GlobalConfigs {
     public static final String RESOURCE_HANDLER = "/data/**";
 
     /**
-     * token缓存时间 3天
+     * token缓存时间 30分钟
      */
-    public static final int TOKEN_CACHE_TIME = 10 * 60;
+    public static final int TOKEN_CACHE_TIME = 30 * 60;
 
     /**
      * linux  ---配置

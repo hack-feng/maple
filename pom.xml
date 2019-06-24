@@ -23,6 +23,7 @@
 		<fastjson.version>1.2.31</fastjson.version>
         <jsoup.version>1.7.3</jsoup.version>
 		<pinyin4j.version>2.5.0</pinyin4j.version>
+		<jedis.version>2.9.0</jedis.version>
 	</properties>
 
 	<dependencies>
@@ -148,13 +149,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			<version>2.9.3</version>
+			<version>${jedis.version}</version>
 		</dependency>
 
 		<!-- 负载均衡

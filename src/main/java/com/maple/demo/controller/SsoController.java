@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,8 +36,9 @@ public class SsoController extends BaseController{
 			@ApiImplicitParam(name = "password", value = "用户详细实体user", required = true, dataType = "String"),
 			@ApiImplicitParam(name = "imgCode", value = "图片验证码", required = true, dataType = "String")})
 	@LogHelper(logDesc = "用户登录", logType = GlobalConfigs.logTypeEnum.LOGIN, operType = GlobalConfigs.operTypeEnum.SELECT)
+	@CrossOrigin
 	public Map<String, Object> login(String username, String password, String imgCode, HttpServletRequest request) {
-
+		System.out.println(request.getHeader("token"));
 		try {
 			User user = userService.userLogin(username, password);
 			if (user != null && user.getId() != null){
@@ -45,7 +47,7 @@ public class SsoController extends BaseController{
 				Integer id = user.getId();
 				RedisUtil.put(GlobalConfigs.getTokenKey(user.getId()), token, GlobalConfigs.TOKEN_CACHE_TIME);
 				Map<String, Object> map = new HashMap<>();
-				map.put("id", id);
+				map.put("loginId", id);
 				map.put("token", token);
 				map.put("content", "登录成功");
 				return messageToMap(StatusConfigs.OK, map);

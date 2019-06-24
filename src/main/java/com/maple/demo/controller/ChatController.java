@@ -5,9 +5,11 @@ import com.maple.demo.config.StatusConfigs;
 import com.maple.demo.service.MessageService;
 import com.maple.demo.service.UserService;
 import com.maple.demo.utils.WebSocket;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
@@ -42,8 +44,11 @@ public class ChatController extends BaseController{
      * @return
      */
     @PostMapping("/getMessageList")
-    public Map<String, Object> getMessageList(Integer friendId, HttpSession session){
-        User user = getUser(session);
+    public Map<String, Object> getMessageList(Integer friendId, HttpServletRequest request){
+        User user = getUser(request);
+        if(user == null){
+            return messageToMap(StatusConfigs.NO_LOGIN, "用户登录信息失效");
+        }
         User friendInfo = userService.getById(friendId);
         List<Map> message = messageService.getMessageList(friendId, user.getId());
         Map result = new HashMap();
@@ -59,10 +64,10 @@ public class ChatController extends BaseController{
         return text;
     }
 
-    @GetMapping("/sendMessage")
+    @GetMapping("/sendsage")
     public String test(String userName){
         String text = "你们好！这是webSocket单人发送！";
-        webSocket.sendOneMessage(userName,text);
+        webSocket.sendOneMessage(userName, text);
         return text;
     }
 }

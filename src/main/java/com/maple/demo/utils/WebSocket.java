@@ -21,8 +21,6 @@ public class WebSocket{
     private static CopyOnWriteArraySet<WebSocket> webSockets = new CopyOnWriteArraySet<>();
     //创建一个线程安全的map
     private static Map<String, Session> sessionPool = new HashMap<>();
-    //放入map中的key,用来表示该连接对象
-    private String username;
 
     @OnOpen
     public void onOpen(Session session, @PathParam("userId") String userId){
@@ -44,7 +42,7 @@ public class WebSocket{
         String[] flag = msgData.split("&");
         JSONObject jsonObject = JSONObject.parseObject(msgData);
         String message = String.valueOf(jsonObject.get("message"));
-        Integer friendId = Integer.valueOf(jsonObject.get("friendId").toString());
+        String friendId = jsonObject.get("friendId").toString();
         System.out.println(friendId+"【websocket消息】收到客户端消息:"+message);
         sendOneMessage(friendId, message);
     }
