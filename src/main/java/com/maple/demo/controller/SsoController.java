@@ -1,5 +1,6 @@
 package com.maple.demo.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.maple.demo.bean.User;
 import com.maple.demo.config.GlobalConfigs;
 import com.maple.demo.config.StatusConfigs;
@@ -8,6 +9,7 @@ import com.maple.demo.service.UserService;
 import com.maple.demo.utils.LogHelper;
 import com.maple.demo.utils.RedisUtil;
 import com.maple.demo.utils.SendEmailUtils;
+import com.maple.demo.utils.WeatherUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -17,9 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/sso")
@@ -28,6 +28,8 @@ public class SsoController extends BaseController{
 
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private WeatherUtil weatherUtil;
 
 	@RequestMapping(value = "/login")
 	@ApiOperation(value = "用户登录", notes = "根据用户名、密码、图片验证码登录系统")
@@ -73,6 +75,15 @@ public class SsoController extends BaseController{
 		SendEmailUtils a = new SendEmailUtils();
 		a.sendEmail(receiverMail, title, content);
 		return message(StatusConfigs.OK, "发送成功");
+	}
+
+	@RequestMapping(value = "test")
+	public String test(){
+		List<String> list = new ArrayList<>();
+		list.add("101120210");
+		List<String> result = weatherUtil.getWeather(list);
+		String a = JSON.toJSONString(result);
+		return a;
 	}
 
 }
