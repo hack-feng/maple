@@ -24,6 +24,11 @@ public class GlobalConfigs {
     public static final int TOKEN_CACHE_TIME = 30 * 60;
 
     /**
+     * 天气预报的缓存时间
+     */
+    public static final int WEATHER_CACHE_TIME = 10 * 60;
+
+    /**
      * linux  ---配置
      */
 

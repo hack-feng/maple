@@ -78,12 +78,11 @@ public class SsoController extends BaseController{
 	}
 
 	@RequestMapping(value = "test")
-	public String test(){
+	public Map<String, Object> test(){
 		List<String> list = new ArrayList<>();
 		list.add("101120210");
-		List<String> result = weatherUtil.getWeather(list);
-		String a = JSON.toJSONString(result);
-		return a;
+		List<Map<String, Object>> result = weatherUtil.getWeather(list);
+		return messageToMap(StatusConfigs.OK, result);
 	}
 
 }

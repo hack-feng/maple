@@ -167,11 +167,26 @@ public final class RedisUtil {
 		RedisUtil.returnResource(jedis);
 	}
 
-	public static void hmput(String key, Map<String, String> value, int expire) {
+	public static <T> void putMap(String key, Map<String, T> value, int expire) {
 		Jedis jedis = RedisUtil.getJedis();
-		jedis.hmset(key, value);
+		try {
+			jedis.set(key.getBytes(), ObjectTranscoderUtil.serialize(value));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		jedis.expire(key, expire);
 		RedisUtil.returnResource(jedis);
+	}
+
+	public static <T> Map<String,T> getMap(String key) {
+		Jedis jedis = RedisUtil.getJedis();
+		if(jedis == null || !jedis.exists(key.getBytes())){
+			return null;
+		}
+		byte[] in = getJedis().get(key.getBytes());
+		Map<String,T> map = (Map<String, T>) ObjectTranscoderUtil.deserialize(in);
+		return map;
 	}
 
 	public static List<String> hmget(String key, String... fields) {
