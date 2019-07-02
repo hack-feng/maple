@@ -1,12 +1,12 @@
 package com.maple.demo.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import io.swagger.models.auth.In;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -17,6 +17,8 @@ public class WebSocket{
 
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
+    //我的id
+    private static String myId;
 
     private static CopyOnWriteArraySet<WebSocket> webSockets = new CopyOnWriteArraySet<>();
     //创建一个线程安全的map
@@ -24,6 +26,7 @@ public class WebSocket{
 
     @OnOpen
     public void onOpen(Session session, @PathParam("userId") String userId){
+        myId = userId;
         this.session = session;
         webSockets.add(this);
         sessionPool.put(userId, session);
@@ -66,12 +69,18 @@ public class WebSocket{
     }
 
     // 此为单点消息
-    public void sendOneMessage(String userName, String message) {
+    public void sendOneMessage(String userId, String message) {
         System.out.println("【websocket消息】单点消息:"+message);
-        Session session = sessionPool.get(userName);
+        Session session = sessionPool.get(userId);
         if (session != null) {
             try {
-                session.getAsyncRemote().sendText(message);
+                Map<String, Object> map = new HashMap<>();
+                map.put("message", message);
+                map.put("createDate", new Date());
+                map.put("userId",myId);
+                String result = JSONObject.toJSONString(map);
+                System.out.println(result);
+                session.getAsyncRemote().sendText(result);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -51,6 +51,7 @@ public class SsoController extends BaseController{
 				Map<String, Object> map = new HashMap<>();
 				map.put("loginId", id);
 				map.put("token", token);
+				map.put("nickName", user.getNickName());
 				map.put("content", "登录成功");
 				return messageToMap(StatusConfigs.OK, map);
 			} else{
