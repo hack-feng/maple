@@ -29,6 +29,7 @@ public class WeatherUtil {
     private RestTemplate restTemplate;
     private static final String weather = "WEATHER_";
 
+    // 根据城市code获取当地的天气预报
     public List<Map<String, Object>> getWeather(List<String> code){
         List<Map<String, Object>> list = new ArrayList<>();
         for (String codeFlag: code) {
@@ -40,19 +41,19 @@ public class WeatherUtil {
                 String url = "http://t.weather.sojson.com/api/weather/city/"+codeFlag;
                 ResponseEntity<String> result = restTemplate.getForEntity(url, String.class);
                 map.put("day", JSON.parse(result.getBody()));
-                map.put("hour", "小时天气预报");
+                Map<String, Object> hourWeather = getWeatherHour(codeFlag);
+                map.put("hour", hourWeather);
                 list.add(map);
                 RedisUtil.putMap(weather+codeFlag, map, GlobalConfigs.WEATHER_CACHE_TIME);
             }else{
                 list.add(redisReult);
             }
-            getWeatherHour(codeFlag);
         }
         return list;
     }
 
     //爬虫中国天气网小时天气
-    public String getWeatherHour(String code){
+    public Map<String, Object> getWeatherHour(String code){
         Map<String, Object> map = new HashMap<>();
         Map<String,Object> today = new HashMap<>();
         Map<String, Object> tomorrow = new HashMap<>();
@@ -63,18 +64,16 @@ public class WeatherUtil {
 
         Element element = document.getElementsByClass("content-inner-left").get(0).getElementsByClass("tabs-content").get(0);
 
-        // 今天的天气页面
+        // 获取今天小时的天气页面
         Element todayEl = element.getElementsByClass("weather-today").get(0);
         today = getContent(todayEl, "todayHoursValue");
-        // 明天的天气页面
+        // 获取明天小时的天气页面
         Element tomorrowEl = element.getElementsByClass("weather-tomorrow").get(0);
         tomorrow = getContent(tomorrowEl, "tomorrowHoursValue");
 
         map.put("today",today);
         map.put("tomorrow",tomorrow);
-        String a = document.getElementsByTag("script").get(0).toString();
-        System.out.println(a);
-        return null;
+        return map;
     }
 
     /** 获取小时天气处理方法 **/
@@ -104,8 +103,10 @@ public class WeatherUtil {
         for (int i = 0; i < hourEl.size(); i ++) {
             hourArray[i] = hourEl.get(i).getElementsByTag("p").get(0).text();
             weatherArray[i] = hourEl.get(i).select("p").get(1).attr("class")
-                    .trim().replace("weather-icon","")
-                    .replace("\\n","");
+                    .replace("weather-icon","")
+                    .replace("-","")
+                    .replace("\\n","")
+                    .trim();
             kqzlArray[i] = windEl.get(i).getElementsByTag("p").get(0).text();
             windArray[i] = windEl.get(i).getElementsByTag("p").get(1).text();
             windPowerArray[i] = windEl.get(i).getElementsByTag("p").get(2).text();
