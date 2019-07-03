@@ -1,16 +1,21 @@
 package com.maple.demo.utils;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.maple.demo.bean.Crawler;
+import com.maple.demo.service.CrawlerService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class CSDNCrawlerUtils {
 
     //查询文章条数计数器
@@ -20,7 +25,20 @@ public class CSDNCrawlerUtils {
     //默认查询阅读量超过的条数
     private static volatile int REND_NUM = 100;
     //存放返回的文章列表
-    private static List<Map<String, Object>> RSEULT;
+    private static List<Crawler> RSEULT;
+    //搜索关键词
+    private static String ABOUT;
+
+    private static final String URL_LIST = "URL_LIST";
+
+    private static final String TITLE_LIST = "TITLE_LIST";
+
+    private static CrawlerService crawlerService;
+
+    @Autowired
+    public void setCrawlerService(CrawlerService crawlerService) {
+        CSDNCrawlerUtils.crawlerService = crawlerService;
+    }
 
     /**
      * 获取https://blog.csdn.net/qq_34988304地址下，我的博客信息
@@ -29,8 +47,8 @@ public class CSDNCrawlerUtils {
      * @param readNum
      * @return
      */
-    public static List<Map<String, Object>> csdn_crawler(String about, Integer num, Integer readNum){
-        List<Map<String, Object>> list = new ArrayList<>();
+    public static List<Crawler> csdn_crawler(String about, Integer num, Integer readNum){
+        List<Crawler> list = new ArrayList<>();
         String url="https://blog.csdn.net/qq_34988304";
         Document doc = getUrl(url);
 
@@ -53,10 +71,10 @@ public class CSDNCrawlerUtils {
             String urls = h4.get(0).select("a").attr("href");
             //访问文章，获取文章内容
             Document contetnDoc = getUrl(urls);
-            Map<String, Object> map = getContent(contetnDoc);
+            Crawler map = getContent(contetnDoc);
             list.add(map);
         }
-        for(Map flag : list){
+        for(Crawler flag : list){
             System.out.println(flag);
         }
         return list;
@@ -72,12 +90,14 @@ public class CSDNCrawlerUtils {
      * @param readNum
      * @return
      */
-    public static List<Map<String, Object>> csdn_about(String about, Integer num, Integer readNum){
+    public static List<Crawler> csdn_about(String about, Integer num, Integer readNum){
         MAX = num;
         COUNT = 0;
+        REND_NUM = readNum;
         RSEULT = new ArrayList<>();
-        List<Map<String, Object>> list = new ArrayList<>();
-        String url = "https://so.csdn.net/so/search/s.do?q=a"+about;
+        ABOUT = about;
+        List<Crawler> list = new ArrayList<>();
+        String url = "https://so.csdn.net/so/search/s.do?q="+about;
 
         //定义存放搜索页的url地址
         Set<String> urlSet = new HashSet<>();
@@ -92,7 +112,10 @@ public class CSDNCrawlerUtils {
             String title = flag.getElementsByTag("span").get(0).text();
             String urls = flag.select("a").get(0).attr("href");
             if ("博客".equals(title)) {
-                urlSet.add(urls);
+                boolean isOk = RedisUtil.sismember(URL_LIST, url);
+                if(!isOk){
+                    urlSet.add(urls);
+                }
             }
         }
         if(urlSet.size() > 0){
@@ -100,7 +123,7 @@ public class CSDNCrawlerUtils {
         }
 
 
-        for(Map flag : list){
+        for(Crawler flag : list){
             System.out.println(flag);
         }
 
@@ -111,23 +134,37 @@ public class CSDNCrawlerUtils {
      * 获取文章列表
      * @return
      */
-    public static List<Map<String, Object>> getArticleList(Set<String> set){
+    public static List<Crawler> getArticleList(Set<String> set){
+        if(set == null || set.size() == 0){
+            return RSEULT;
+        }
         Set<String> urlSet = new HashSet<>();
         if(COUNT < MAX) {
             for (String url : set) {
                 Document doc = getUrl(url);
-                Map<String, Object> contentMap = getContent(doc);
-                if (contentMap != null) {
+                Crawler contentMap = getContent(doc);
+                contentMap.setUrl(url);
+                contentMap.setSearchContent(ABOUT);
+                if (contentMap != null && StringUtils.isNotEmpty(contentMap.getTitle())) {
+                    // 判断查出的条数是否满足需要的条数
                     if (COUNT < MAX) {
-                        RSEULT.add(contentMap);
-                        COUNT++;
-                        urlSet.addAll(getContentUrls(doc));
+
+                        // 根据url地址和标题判断文章是否已经存在
+                        // 将文章url和标题分别放入redis的set中，如果返回1，插入成功，不存在，否则已存在
+                        Long urlCount = RedisUtil.sadd(URL_LIST, url);
+                        Long titleCount = RedisUtil.sadd(TITLE_LIST, contentMap.getTitle());
+                        if(urlCount == 1 && titleCount == 1){
+//                            RSEULT.add(contentMap);
+                            crawlerService.save(contentMap);
+                            COUNT++;
+                            urlSet.addAll(getContentUrls(doc));
+                        }
                     } else {
                         break;
                     }
                 }
             }
-            if(COUNT < MAX) {
+            if(COUNT < MAX && urlSet.size() > 0) {
                 getArticleList(urlSet);
             }
         }
@@ -139,7 +176,7 @@ public class CSDNCrawlerUtils {
      * @param doc
      * @return
      */
-    public static Map<String, Object> getContent(Document doc){
+    public static Crawler getContent(Document doc){
         Map<String, Object> map = new HashMap<>();
         String content = null;
         int read = 0;
@@ -168,11 +205,21 @@ public class CSDNCrawlerUtils {
             content = element.toString();
         }
 
-        map.put("read", read);
-        map.put("title", title);
-        map.put("auth", auth);
-        map.put("content", content);
-        return map;
+        if(content.length() > 100000){
+            return new Crawler();
+        }
+        Crawler crawler = new Crawler();
+        crawler.setAuther(auth);
+        crawler.setContent(content);
+        crawler.setCreateDate(new Date());
+        crawler.setNum(read);
+        crawler.setTitle(title);
+
+//        map.put("read", read);
+//        map.put("title", title);
+//        map.put("auth", auth);
+//        map.put("content", content);
+        return crawler;
     }
 
 
@@ -206,7 +253,10 @@ public class CSDNCrawlerUtils {
                 Integer numFlag = Integer.valueOf(m.replaceAll(""));
 
                 if(numFlag != null && numFlag > 0){
-                    urls.add(url);
+                    boolean isOk = RedisUtil.sismember(URL_LIST, url);
+                    if(!isOk){
+                        urls.add(url);
+                    }
                 }
             } catch (NumberFormatException e) {
                 e.printStackTrace();

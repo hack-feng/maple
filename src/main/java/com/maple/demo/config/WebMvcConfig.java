@@ -13,7 +13,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
-import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 /**
  * 我的配置信息
@@ -71,16 +70,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //    public void addCorsMappings(CorsRegistry registry) {
 //        registry.addMapping("/**");
 //    }
-
-    /**
-     * 注入ServerEndpointExporter，
-     * 这个bean会自动注册使用了@ServerEndpoint注解声明的Websocket endpoint
-     */
-    @Bean
-    public ServerEndpointExporter serverEndpointExporter() {
-        return new ServerEndpointExporter();
-    }
-
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {

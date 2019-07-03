@@ -176,6 +176,7 @@
 	</dependencyManagement>-->
 
 	<build>
+		<finalName>maple</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

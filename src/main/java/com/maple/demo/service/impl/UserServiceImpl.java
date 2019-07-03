@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maple.demo.bean.User;
 import com.maple.demo.dao.UserMapper;
 import com.maple.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,9 +20,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
+    @Autowired
+    private UserMapper userMapper;
     @Override
     public User userLogin(String username, String password) throws RuntimeException{
-        User user = this.baseMapper.selectOne(new QueryWrapper<User>().eq("user_name", username).eq("is_delete", 0));
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("user_name", username).eq("is_delete", 0));
         if (user == null){
             throw new RuntimeException("该用户不存在！");
         }

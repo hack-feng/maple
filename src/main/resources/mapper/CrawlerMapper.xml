@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maple.demo.dao.CrawlerMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.maple.demo.bean.Crawler">
+		<id column="id" property="id" />
+		<result column="title" property="title" />
+		<result column="content" property="content" />
+		<result column="auther" property="auther" />
+		<result column="url" property="url" />
+		<result column="num" property="num" />
+		<result column="create_date" property="createDate" />
+		<result column="search_content" property="searchContent" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, title, content, auther, url, num, create_date AS createDate, search_content AS searchContent
+    </sql>
+
+</mapper>

@@ -1,10 +1,8 @@
 package com.maple.demo.dao;
 
-
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.maple.demo.bean.User;
+import com.maple.demo.bean.Crawler;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.context.annotation.Bean;
 
 /**
  * <p>
@@ -12,9 +10,9 @@ import org.springframework.context.annotation.Bean;
  * </p>
  *
  * @author 
- * @since 2019-05-03
+ * @since 2019-07-02
  */
 @Mapper
-public interface UserMapper extends BaseMapper<User> {
+public interface CrawlerMapper extends BaseMapper<Crawler> {
 
 }

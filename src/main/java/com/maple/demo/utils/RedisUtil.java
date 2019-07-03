@@ -186,6 +186,7 @@ public final class RedisUtil {
 		}
 		byte[] in = getJedis().get(key.getBytes());
 		Map<String,T> map = (Map<String, T>) ObjectTranscoderUtil.deserialize(in);
+		RedisUtil.returnResource(jedis);
 		return map;
 	}
 
@@ -244,6 +245,33 @@ public final class RedisUtil {
 		RedisUtil.returnResource(jedis);
 		return vals;
 	}
+
+	/**
+	 * 判断成员value是否存在key 的set集合里面
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public static  boolean sismember(String key, String value){
+		Jedis jedis = RedisUtil.getJedis();
+		boolean isOk = jedis.sismember(key, value);
+		RedisUtil.returnResource(jedis);
+		return  isOk;
+	}
+
+	/**
+	 * 往key的set集合添加一条value的数据
+	 * @param key
+	 * @param value
+	 */
+	public static long sadd(String key, String value){
+		Jedis jedis = RedisUtil.getJedis();
+		long count = jedis.sadd(key, value);
+		RedisUtil.returnResource(jedis);
+		return count;
+	}
+
+
 
 	public static String getTokenKey(long id) {
 		String key = "LOGIN_UserToken_WEB" + id;

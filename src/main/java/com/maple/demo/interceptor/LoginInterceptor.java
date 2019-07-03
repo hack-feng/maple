@@ -21,20 +21,21 @@ public class LoginInterceptor implements HandlerInterceptor {
         if(request.getMethod().equals("OPTIONS")){
             return true;
         }
-        String token = request.getHeader("token");
-        String loginId = request.getHeader("loginId");
-        if(!StringUtils.isEmpty(loginId) && !StringUtils.isEmpty(token)){
-            Integer id = Integer.valueOf(loginId);
-            String tokenRedis = RedisUtil.get(GlobalConfigs.getTokenKey(id));
-            if(!token.equals(tokenRedis)){
-                return false;
-            }else{
-                //刷新redis的值，每次成功访问刷新失效时间
-                RedisUtil.put(GlobalConfigs.getTokenKey(id), token, GlobalConfigs.TOKEN_CACHE_TIME);
-                return true;
-            }
-        }else{
-            return false;
-        }
+        return true;
+//        String token = request.getHeader("token");
+//        String loginId = request.getHeader("loginId");
+//        if(!StringUtils.isEmpty(loginId) && !StringUtils.isEmpty(token)){
+//            Integer id = Integer.valueOf(loginId);
+//            String tokenRedis = RedisUtil.get(GlobalConfigs.getTokenKey(id));
+//            if(!token.equals(tokenRedis)){
+//                return false;
+//            }else{
+//                //刷新redis的值，每次成功访问刷新失效时间
+//                RedisUtil.put(GlobalConfigs.getTokenKey(id), token, GlobalConfigs.TOKEN_CACHE_TIME);
+//                return true;
+//            }
+//        }else{
+//            return false;
+//        }
     }
 }

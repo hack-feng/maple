@@ -91,6 +91,7 @@ public class HttpUtil {
             return result.toString();
         } catch (Exception e) {
             logger.error("调用接口["+url+"]失败！请求URL："+url+"，参数："+params,e);
+            e.printStackTrace();
             //处理错误流，提高http连接被重用的几率
             try {
                 byte[] buf = new byte[100];
