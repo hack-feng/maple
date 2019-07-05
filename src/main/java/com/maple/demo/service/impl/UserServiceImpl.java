@@ -1,6 +1,5 @@
 package com.maple.demo.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.maple.demo.bean.User;
@@ -14,14 +13,19 @@ import org.springframework.stereotype.Service;
  *  服务实现类
  * </p>
  *
- * @author 
+ * maple
  * @since 2019-05-03
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
+    private final UserMapper userMapper;
+
     @Autowired
-    private UserMapper userMapper;
+    public UserServiceImpl(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
     @Override
     public User userLogin(String username, String password) throws RuntimeException{
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("user_name", username).eq("is_delete", 0));

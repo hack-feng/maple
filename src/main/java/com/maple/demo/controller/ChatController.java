@@ -5,12 +5,13 @@ import com.maple.demo.config.StatusConfigs;
 import com.maple.demo.service.MessageService;
 import com.maple.demo.service.UserService;
 import com.maple.demo.utils.WebSocket;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class ChatController extends BaseController{
         }
         User friendInfo = userService.getById(friendId);
         List<Map> message = messageService.getMessageList(friendId, user.getId());
-        Map result = new HashMap();
+        Map<String, Object> result = new HashMap<>();
         result.put("message", message);
         result.put("friendInfo", friendInfo);
         return messageToMap(StatusConfigs.OK, result);
