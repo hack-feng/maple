@@ -1,10 +1,12 @@
 package com.maple.demo.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.maple.demo.bean.Message;
 import com.maple.demo.bean.User;
 import com.maple.demo.config.GlobalConfigs;
 import com.maple.demo.config.StatusConfigs;
 import com.maple.demo.config.WebMvcConfig;
+import com.maple.demo.config.rabbitmq.HelloSender;
 import com.maple.demo.service.UserService;
 import com.maple.demo.utils.LogHelper;
 import com.maple.demo.utils.RedisUtil;
@@ -30,6 +32,8 @@ public class SsoController extends BaseController{
 	private UserService userService;
 	@Autowired
 	private WeatherUtil weatherUtil;
+	@Autowired
+	private HelloSender helloSender;
 
 	@RequestMapping(value = "/login")
 	@ApiOperation(value = "用户登录", notes = "根据用户名、密码、图片验证码登录系统")
@@ -86,4 +90,16 @@ public class SsoController extends BaseController{
 		return messageToMap(StatusConfigs.OK, result);
 	}
 
+	@RequestMapping(value = "testChat")
+	public void testChat(){
+		Message msg = new Message();
+		msg.setCreateDate(new Date());
+		msg.setMessageType("text");
+		msg.setReciverUser(1);
+		msg.setSendUser(2);
+		msg.setStatus(1);
+		msg.setType(1);
+		msg.setMessage("MQ测试消息");
+		helloSender.sendSaveChatMsgQueue(msg);
+	}
 }

@@ -1,6 +1,9 @@
 package com.maple.demo.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.maple.demo.bean.Message;
+import com.maple.demo.config.rabbitmq.HelloSender;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -23,6 +26,8 @@ public class WebSocket{
     private static CopyOnWriteArraySet<WebSocket> webSockets = new CopyOnWriteArraySet<>();
     //创建一个线程安全的map
     private static Map<String, Session> sessionPool = new HashMap<>();
+    @Autowired
+    private HelloSender helloSender;
 
     @OnOpen
     public void onOpen(Session session, @PathParam("userId") String userId){
@@ -81,6 +86,17 @@ public class WebSocket{
                 String result = JSONObject.toJSONString(map);
                 System.out.println(result);
                 session.getAsyncRemote().sendText(result);
+
+                // 将聊天消息放入mq，异步保存
+                Message msg = new Message();
+                msg.setCreateDate(new Date());
+                msg.setMessageType("text");
+                msg.setReciverUser(Integer.valueOf(userId));
+                msg.setSendUser(Integer.valueOf(myId));
+                msg.setStatus(1);
+                msg.setType(1);
+                msg.setMessage(message);
+                helloSender.sendSaveChatMsgQueue(msg);
             } catch (Exception e) {
                 e.printStackTrace();
             }

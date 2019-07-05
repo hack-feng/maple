@@ -1,5 +1,7 @@
 package com.maple.demo.config.rabbitmq;
 
+import com.maple.demo.bean.Message;
+import com.maple.demo.service.MessageService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -11,6 +13,8 @@ public class HelloReceive {
 
     @Autowired(required=false)
     private JavaMailSender javaMailSender;
+    @Autowired
+    private MessageService messageService;
 
     /**
      * 监听Rabbit下的sendEmail通道，处理消息队列中未处理的消息
@@ -22,5 +26,14 @@ public class HelloReceive {
         //发送邮件
         javaMailSender.send(mainMessage);
 
+    }
+
+    /**
+     * 异步保存聊天的消息
+     * @param message
+     */
+    @RabbitListener(queues = "saveChatMsgQueue")
+    public void saveChatMsgQueue(Message message){
+        messageService.save(message);
     }
 }
