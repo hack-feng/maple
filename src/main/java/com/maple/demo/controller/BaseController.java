@@ -1,8 +1,8 @@
 package com.maple.demo.controller;
 
-import com.maple.demo.bean.User;
+import com.maple.demo.bean.BaseUser;
 import com.maple.demo.config.GlobalConfigs;
-import com.maple.demo.service.UserService;
+import com.maple.demo.service.IBaseUserService;
 import com.maple.demo.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ public class BaseController {
 
 
 	@Autowired
-	private UserService userService;
+	private IBaseUserService userService;
 
     public String message(int status, String content) {
         return "{\"status\":\"" + status + "\",\"content\":\"" + content + "\"}";
@@ -30,10 +30,10 @@ public class BaseController {
         return map;
     }
 
-    User getUser(HttpServletRequest request){
+    BaseUser getUser(HttpServletRequest request){
         String token = request.getHeader("token");
         String loginId = request.getHeader("loginId");
-        User user = null;
+        BaseUser user = null;
         if(!StringUtils.isEmpty(loginId) && !StringUtils.isEmpty(token)){
             Integer id = Integer.valueOf(loginId);
             String tokenRedis = RedisUtil.get(GlobalConfigs.getTokenKey(id));

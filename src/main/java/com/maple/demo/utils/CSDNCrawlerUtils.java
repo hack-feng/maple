@@ -1,8 +1,8 @@
 package com.maple.demo.utils;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.maple.demo.bean.Crawler;
-import com.maple.demo.service.CrawlerService;
+import com.maple.demo.bean.MapleCrawler;
+import com.maple.demo.service.IMapleCrawlerService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,7 +25,7 @@ public class CSDNCrawlerUtils {
     //默认查询阅读量超过的条数
     private static volatile int REND_NUM = 100;
     //存放返回的文章列表
-    private static List<Crawler> RSEULT;
+    private static List<MapleCrawler> RSEULT;
     //搜索关键词
     private static String ABOUT;
 
@@ -33,10 +33,10 @@ public class CSDNCrawlerUtils {
 
     private static final String TITLE_LIST = "TITLE_LIST";
 
-    private static CrawlerService crawlerService;
+    private static IMapleCrawlerService crawlerService;
 
     @Autowired
-    public void setCrawlerService(CrawlerService crawlerService) {
+    public void setMapleCrawlerService(IMapleCrawlerService crawlerService) {
         CSDNCrawlerUtils.crawlerService = crawlerService;
     }
 
@@ -47,8 +47,8 @@ public class CSDNCrawlerUtils {
      * @param readNum
      * @return
      */
-    public static List<Crawler> csdn_crawler(String about, Integer num, Integer readNum){
-        List<Crawler> list = new ArrayList<>();
+    public static List<MapleCrawler> csdn_crawler(String about, Integer num, Integer readNum){
+        List<MapleCrawler> list = new ArrayList<>();
         String url="https://blog.csdn.net/qq_34988304";
         Document doc = getUrl(url);
 
@@ -71,10 +71,10 @@ public class CSDNCrawlerUtils {
             String urls = h4.get(0).select("a").attr("href");
             //访问文章，获取文章内容
             Document contetnDoc = getUrl(urls);
-            Crawler map = getContent(contetnDoc);
+            MapleCrawler map = getContent(contetnDoc);
             list.add(map);
         }
-        for(Crawler flag : list){
+        for(MapleCrawler flag : list){
             System.out.println(flag);
         }
         return list;
@@ -90,13 +90,13 @@ public class CSDNCrawlerUtils {
      * @param readNum
      * @return
      */
-    public static List<Crawler> csdn_about(String about, Integer num, Integer readNum){
+    public static List<MapleCrawler> csdn_about(String about, Integer num, Integer readNum){
         MAX = num;
         COUNT = 0;
         REND_NUM = readNum;
         RSEULT = new ArrayList<>();
         ABOUT = about;
-        List<Crawler> list = new ArrayList<>();
+        List<MapleCrawler> list = new ArrayList<>();
         String url = "https://so.csdn.net/so/search/s.do?q="+about;
 
         //定义存放搜索页的url地址
@@ -123,7 +123,7 @@ public class CSDNCrawlerUtils {
         }
 
 
-        for(Crawler flag : list){
+        for(MapleCrawler flag : list){
             System.out.println(flag);
         }
 
@@ -134,7 +134,7 @@ public class CSDNCrawlerUtils {
      * 获取文章列表
      * @return
      */
-    public static List<Crawler> getArticleList(Set<String> set){
+    public static List<MapleCrawler> getArticleList(Set<String> set){
         if(set == null || set.size() == 0){
             return RSEULT;
         }
@@ -142,7 +142,7 @@ public class CSDNCrawlerUtils {
         if(COUNT < MAX) {
             for (String url : set) {
                 Document doc = getUrl(url);
-                Crawler contentMap = getContent(doc);
+                MapleCrawler contentMap = getContent(doc);
                 contentMap.setUrl(url);
                 contentMap.setSearchContent(ABOUT);
                 if (contentMap != null && StringUtils.isNotEmpty(contentMap.getTitle())) {
@@ -176,7 +176,7 @@ public class CSDNCrawlerUtils {
      * @param doc
      * @return
      */
-    public static Crawler getContent(Document doc){
+    public static MapleCrawler getContent(Document doc){
         Map<String, Object> map = new HashMap<>();
         String content = null;
         int read = 0;
@@ -206,20 +206,20 @@ public class CSDNCrawlerUtils {
         }
 
         if(content.length() > 100000){
-            return new Crawler();
+            return new MapleCrawler();
         }
-        Crawler crawler = new Crawler();
-        crawler.setAuther(auth);
-        crawler.setContent(content);
-        crawler.setCreateDate(new Date());
-        crawler.setNum(read);
-        crawler.setTitle(title);
+        MapleCrawler MapleCrawler = new MapleCrawler();
+        MapleCrawler.setAuther(auth);
+        MapleCrawler.setContent(content);
+        MapleCrawler.setCreateDate(new Date());
+        MapleCrawler.setNum(read);
+        MapleCrawler.setTitle(title);
 
 //        map.put("read", read);
 //        map.put("title", title);
 //        map.put("auth", auth);
 //        map.put("content", content);
-        return crawler;
+        return MapleCrawler;
     }
 
 

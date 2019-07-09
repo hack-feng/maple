@@ -1,7 +1,7 @@
 package com.maple.demo.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.maple.demo.bean.Message;
+import com.maple.demo.bean.ChatMessage;
 import com.maple.demo.config.rabbitmq.HelloSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -88,7 +88,7 @@ public class WebSocket{
                 session.getAsyncRemote().sendText(result);
 
                 // 将聊天消息放入mq，异步保存
-                Message msg = new Message();
+                ChatMessage msg = new ChatMessage();
                 msg.setCreateDate(new Date());
                 msg.setMessageType("text");
                 msg.setReciverUser(Integer.valueOf(userId));

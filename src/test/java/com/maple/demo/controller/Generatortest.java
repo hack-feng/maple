@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by badado on 2019/4/25.
@@ -28,10 +29,11 @@ public class Generatortest {
                 //设置输出代码的位置
                 .setOutputDir("d:")
                 //.setEnableCache(false)// XML 二级缓存
-                //.setBaseResultMap(true)// XML ResultMap
-                //.setBaseColumnList(true)// XML columList
+                .setBaseResultMap(true)// XML ResultMap
+                .setBaseColumnList(true)// XML columList
                 //.setKotlin(true) 是否生成 kotlin 代码
                 //设置是否覆盖原来的代码
+                .setSwagger2(true)
                 .setFileOverride(true);
 
         //******************************数据源配置***************************************
@@ -78,13 +80,13 @@ public class Generatortest {
                 //全局大写命名是否开启
                 .setCapitalMode(true)
                 //【实体】是否为lombok模型
-                .setEntityLombokModel(true)
+                .setEntityLombokModel(false)
                 //表名生成策略  下划线转驼峰
                 .setNaming(NamingStrategy.underline_to_camel)
                 //自动填充设置
                 .setTableFillList(tableFillList)
                 //修改替换成你需要的表名，多个表名传数组
-                .setInclude("maple_user");
+                .setInclude(".*.");
         //集成注入设置
         //注入全局设置
         new AutoGenerator().setGlobalConfig(config)
@@ -100,7 +102,9 @@ public class Generatortest {
                                 //设置controller信息
                                 .setController("controller")
                                 //设置实体类信息
-                                .setEntity("entity")
+                                .setEntity("bean")
+                                .setMapper("dao")
+                                .setXml("mapper")
                 )
                 //设置自定义模板
                 .setTemplate(

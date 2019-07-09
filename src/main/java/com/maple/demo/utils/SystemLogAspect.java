@@ -1,7 +1,7 @@
 package com.maple.demo.utils;
 
-import com.maple.demo.bean.SystemLog;
-import com.maple.demo.service.SystemLogService;
+import com.maple.demo.bean.LogSystemLog;
+import com.maple.demo.service.ILogSystemLogService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -35,7 +35,7 @@ public class SystemLogAspect {
     private Long endTime;
 
     @Autowired
-    private SystemLogService systemLogService;
+    private ILogSystemLogService systemLogService;
 
     //定义切点，拦截com.maple.demo.controller下的所有方法
 //    @Pointcut("execution(public * com.maple.demo.controller..*.*(..))")
@@ -47,7 +47,7 @@ public class SystemLogAspect {
     @Around(value = "systemLog()&&@annotation(LogHelper)")
     public Object doAround(ProceedingJoinPoint joinPoint){
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        SystemLog log = new SystemLog();
+        LogSystemLog log = new LogSystemLog();
         startTime = new Date().getTime();
         Object obj;
         try {

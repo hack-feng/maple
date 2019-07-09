@@ -1,6 +1,6 @@
 package com.maple.demo.config.rabbitmq;
 
-import com.maple.demo.bean.Message;
+import com.maple.demo.bean.ChatMessage;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -29,7 +29,7 @@ public class HelloSender {
      * 聊天信息放入"saveChatMsgQueue"通道的消息队列
      * @param message
      */
-    public void sendSaveChatMsgQueue(Message message){
+    public void sendSaveChatMsgQueue(ChatMessage message){
         amqpTemplate.convertAndSend("saveChatMsgQueue", message);
     }
 }

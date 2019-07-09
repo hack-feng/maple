@@ -1,6 +1,6 @@
 package com.maple.demo.controller;
 
-import com.maple.demo.bean.Crawler;
+import com.maple.demo.bean.MapleCrawler;
 import com.maple.demo.utils.CSDNCrawlerUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * CSDN爬虫工具
@@ -27,8 +26,8 @@ public class CrawlerController {
 	 * @return
 	 */
 	@PostMapping(value = "/start")
-	public List<Crawler> start(String about, Integer num, Integer readNum) {
-		List<Crawler> result = new ArrayList<>();
+	public List<MapleCrawler> start(String about, Integer num, Integer readNum) {
+		List<MapleCrawler> result = new ArrayList<>();
 
 		result = CSDNCrawlerUtils.csdn_crawler("123", 1, 1);
 
@@ -36,8 +35,8 @@ public class CrawlerController {
 	}
 
 	@PostMapping(value = "/getCsdnByAbout")
-	public List<Crawler> getCsdnByAbout(String about, Integer num, Integer readNum){
-		List<Crawler> result = new ArrayList<>();
+	public List<MapleCrawler> getCsdnByAbout(String about, Integer num, Integer readNum){
+		List<MapleCrawler> result = new ArrayList<>();
 
 		result = CSDNCrawlerUtils.csdn_about(about, num, readNum);
 

@@ -1,9 +1,9 @@
 package com.maple.demo.controller;
 
-import com.maple.demo.bean.User;
+import com.maple.demo.bean.BaseUser;
 import com.maple.demo.config.StatusConfigs;
-import com.maple.demo.service.MessageService;
-import com.maple.demo.service.UserService;
+import com.maple.demo.service.IBaseUserService;
+import com.maple.demo.service.IChatMessageService;
 import com.maple.demo.utils.WebSocket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,10 +24,10 @@ public class ChatController extends BaseController{
     private WebSocket webSocket;
 
     @Autowired
-    private UserService userService;
+    private IBaseUserService userService;
 
     @Autowired
-    private MessageService messageService;
+    private IChatMessageService messageService;
 
     /**
      * 获取好友列表
@@ -35,7 +35,7 @@ public class ChatController extends BaseController{
      */
     @PostMapping("/getList")
     public Map<String, Object> getList(){
-        List<User> userList = userService.list(null);
+        List<BaseUser> userList = userService.list(null);
         return messageToMap(StatusConfigs.OK, userList);
     }
 
@@ -46,11 +46,11 @@ public class ChatController extends BaseController{
      */
     @PostMapping("/getMessageList")
     public Map<String, Object> getMessageList(Integer friendId, HttpServletRequest request){
-        User user = getUser(request);
+        BaseUser user = getUser(request);
         if(user == null){
             return messageToMap(StatusConfigs.NO_LOGIN, "用户登录信息失效");
         }
-        User friendInfo = userService.getById(friendId);
+        BaseUser friendInfo = userService.getById(friendId);
         List<Map> message = messageService.getMessageList(friendId, user.getId());
         Map<String, Object> result = new HashMap<>();
         result.put("message", message);

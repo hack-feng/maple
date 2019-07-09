@@ -1,13 +1,11 @@
 package com.maple.demo.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.maple.demo.bean.Message;
-import com.maple.demo.bean.User;
+import com.maple.demo.bean.BaseUser;
+import com.maple.demo.bean.ChatMessage;
 import com.maple.demo.config.GlobalConfigs;
 import com.maple.demo.config.StatusConfigs;
-import com.maple.demo.config.WebMvcConfig;
 import com.maple.demo.config.rabbitmq.HelloSender;
-import com.maple.demo.service.UserService;
+import com.maple.demo.service.IBaseUserService;
 import com.maple.demo.utils.LogHelper;
 import com.maple.demo.utils.RedisUtil;
 import com.maple.demo.utils.SendEmailUtils;
@@ -29,7 +27,7 @@ public class SsoController extends BaseController{
 
 
 	@Autowired
-	private UserService userService;
+	private IBaseUserService userService;
 	@Autowired
 	private WeatherUtil weatherUtil;
 	@Autowired
@@ -46,7 +44,7 @@ public class SsoController extends BaseController{
 	public Map<String, Object> login(String username, String password, String imgCode, HttpServletRequest request) {
 		System.out.println(request.getHeader("token"));
 		try {
-			User user = userService.userLogin(username, password);
+			BaseUser user = userService.userLogin(username, password);
 			if (user != null && user.getId() != null){
 				//存放用户登录session信息，将session放在redis数据库，实现分布式session
 				String token = UUID.randomUUID().toString().replace("-", "");
@@ -92,7 +90,7 @@ public class SsoController extends BaseController{
 
 	@RequestMapping(value = "testChat")
 	public void testChat(){
-		Message msg = new Message();
+		ChatMessage msg = new ChatMessage();
 		msg.setCreateDate(new Date());
 		msg.setMessageType("text");
 		msg.setReciverUser(1);
