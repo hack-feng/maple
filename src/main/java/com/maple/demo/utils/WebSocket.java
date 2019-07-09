@@ -3,7 +3,6 @@ package com.maple.demo.utils;
 import com.alibaba.fastjson.JSONObject;
 import com.maple.demo.bean.ChatMessage;
 import com.maple.demo.config.rabbitmq.HelloSender;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -15,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @Component
-@ServerEndpoint("/websocket/{userId}")
+@ServerEndpoint(value = "/websocket/{userId}")
 public class WebSocket{
 
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
@@ -26,16 +25,20 @@ public class WebSocket{
     private static CopyOnWriteArraySet<WebSocket> webSockets = new CopyOnWriteArraySet<>();
     //创建一个线程安全的map
     private static Map<String, Session> sessionPool = new HashMap<>();
-    @Autowired
-    private HelloSender helloSender;
 
     @OnOpen
     public void onOpen(Session session, @PathParam("userId") String userId){
-        myId = userId;
-        this.session = session;
-        webSockets.add(this);
-        sessionPool.put(userId, session);
-        System.out.println(userId+"【webSocket消息】有新的连接，总数为："+webSockets.size());
+        Session sessionFlag = sessionPool.get(userId);
+        if (sessionFlag == null) {
+            myId = userId;
+            this.session = session;
+            webSockets.add(this);
+            sessionPool.put(userId, session);
+            System.out.println(userId+"【webSocket消息】有新的连接，总数为："+webSockets.size());
+        }else{
+            // 已存在
+        }
+
     }
 
     @OnClose
@@ -77,26 +80,31 @@ public class WebSocket{
     public void sendOneMessage(String userId, String message) {
         System.out.println("【websocket消息】单点消息:"+message);
         Session session = sessionPool.get(userId);
+
+        // 将聊天消息放入mq，异步保存
+        ChatMessage msg = new ChatMessage();
+        msg.setCreateDate(new Date());
+        msg.setMessageType("text");
+        msg.setReciverUser(Integer.valueOf(userId));
+        msg.setSendUser(Integer.valueOf(myId));
+        msg.setStatus(1);
+        msg.setType(1);
+        msg.setMessage(message);
+
+        // 将消息放入消息队列，HelloSender注入不进来，暂未找到解决方案
+        HelloSender helloSender = new HelloSender();
+        helloSender.sendSaveChatMsgQueue(msg);
+
         if (session != null) {
             try {
                 Map<String, Object> map = new HashMap<>();
                 map.put("message", message);
                 map.put("createDate", new Date());
-                map.put("userId",myId);
+                map.put("userId", myId);
                 String result = JSONObject.toJSONString(map);
                 System.out.println(result);
                 session.getAsyncRemote().sendText(result);
 
-                // 将聊天消息放入mq，异步保存
-                ChatMessage msg = new ChatMessage();
-                msg.setCreateDate(new Date());
-                msg.setMessageType("text");
-                msg.setReciverUser(Integer.valueOf(userId));
-                msg.setSendUser(Integer.valueOf(myId));
-                msg.setStatus(1);
-                msg.setType(1);
-                msg.setMessage(message);
-                helloSender.sendSaveChatMsgQueue(msg);
             } catch (Exception e) {
                 e.printStackTrace();
             }

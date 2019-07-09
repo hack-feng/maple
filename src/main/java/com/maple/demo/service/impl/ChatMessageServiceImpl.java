@@ -21,7 +21,8 @@ import java.util.Map;
 @Service
 public class ChatMessageServiceImpl extends ServiceImpl<ChatMessageMapper, ChatMessage> implements IChatMessageService {
     @Autowired
-    private ChatMessageServiceImpl messageMapper;
+    private ChatMessageMapper messageMapper;
+
     @Override
     public List<Map> getMessageList(Integer friendId, Integer userId) {
         return messageMapper.getMessageList(friendId, userId);
