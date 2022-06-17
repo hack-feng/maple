@@ -20,7 +20,7 @@
 		<swagger2.version>2.7.0</swagger2.version>
 		<poi.version>3.9</poi.version>
 		<druid.version>1.1.0</druid.version>
-		<fastjson.version>1.2.31</fastjson.version>
+		<fastjson.version>1.2.83</fastjson.version>
         <jsoup.version>1.7.3</jsoup.version>
 		<pinyin4j.version>2.5.0</pinyin4j.version>
 		<jedis.version>2.9.0</jedis.version>
